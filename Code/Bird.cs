@@ -35,6 +35,7 @@ public class Bird : MonoBehaviour {
     public event EventHandler Question;
     public event EventHandler Feedback;
     public event EventHandler Answers;
+    private bool waiting = true;
 
     public Rigidbody2D birdRigidbody2D;
     private State state;
@@ -80,22 +81,24 @@ public class Bird : MonoBehaviour {
         case State.Question:
             if (Question != null) Question(this, EventArgs.Empty);
             if (Answers != null) Answers (this, EventArgs.Empty);
-            if (TestInput()) {
+            if (waiting == false) {
                 state = State.Playing;
                 birdRigidbody2D.bodyType = RigidbodyType2D.Dynamic;
                 Jump();
                 questionWindow.Hide();
                 answersWindow.Hide();
+                waiting = true;
                 if (OnStartedPlaying != null) OnStartedPlaying(this, EventArgs.Empty);
             }
             break;
         case State.Feedback:
             if (Feedback != null) Feedback(this, EventArgs.Empty);
-            if (TestInput()) {
+            if (waiting == false) {
                 state = State.Playing;
                 birdRigidbody2D.bodyType = RigidbodyType2D.Dynamic;
                 Jump();
                 feedbackWindow.Hide();
+                waiting = true;
                 if (OnStartedPlaying != null) OnStartedPlaying(this, EventArgs.Empty);
             }
             break;
@@ -142,5 +145,10 @@ public class Bird : MonoBehaviour {
     public void stopFeedback(){
         birdRigidbody2D.bodyType = RigidbodyType2D.Static;
         state = State.Feedback;
+    }
+
+    public bool play() {
+        waiting = false;
+        return waiting;
     }
 }

@@ -19,13 +19,14 @@ using CodeMonkey.Utils;
 public class FeedbackWindow : MonoBehaviour {
 
     private Text feedbackText;
-    private Text SkipFeedback;
     private Text answer;
 
     private void Awake() {
         feedbackText = transform.Find("FeedbackText").GetComponent<Text>();
-        SkipFeedback = transform.Find("SkipFeedback").GetComponent<Text>();
         answer = transform.Find("Answer").GetComponent<Text>();
+
+        transform.Find("skipBtn").GetComponent<Button_UI>().ClickFunc = () => { Bird.GetInstance().play(); };
+        transform.Find("skipBtn").GetComponent<Button_UI>().AddButtonSounds();
 
         transform.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
     }
@@ -38,8 +39,6 @@ public class FeedbackWindow : MonoBehaviour {
 
     private void Bird_Feedback(object sender, System.EventArgs e) {
         feedbackText.text = Level.GetInstance().GetFeedback();
-  
-        SkipFeedback.text = "Klik om verder te gaan";
 
         answer.text = "Antwoord is: " + Level.GetInstance().GetAnswer();
 

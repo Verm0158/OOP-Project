@@ -19,11 +19,12 @@ using CodeMonkey.Utils;
 public class QuestionWindow : MonoBehaviour {
 
     private Text questionText;
-    private Text SkipQuestion;
 
     private void Awake() {
         questionText = transform.Find("QuestionText").GetComponent<Text>();
-        SkipQuestion = transform.Find("SkipQuestion").GetComponent<Text>();
+
+        transform.Find("skipBtn").GetComponent<Button_UI>().ClickFunc = () => { Bird.GetInstance().play(); };
+        transform.Find("skipBtn").GetComponent<Button_UI>().AddButtonSounds();
 
         transform.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
     }
@@ -35,8 +36,6 @@ public class QuestionWindow : MonoBehaviour {
 
     private void Bird_Question(object sender, System.EventArgs e) {
         questionText.text = Level.GetInstance().GetQuestion();
-  
-        SkipQuestion.text = "Klik om verder te gaan";
 
         Show();
     }
