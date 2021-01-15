@@ -1,16 +1,4 @@
-﻿/* 
-    ------------------- Code Monkey -------------------
-
-    Thank you for downloading this package
-    I hope you find it useful in your projects
-    If you have any questions let me know
-    Cheers!
-
-               unitycodemonkey.com
-    --------------------------------------------------
- */
-
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -26,6 +14,9 @@ public class Bird : MonoBehaviour {
     public FeedbackWindow feedbackWindow;
     public TextWindow answersWindow;
 
+    /**
+    * Getter for the instance.
+    **/
     public static Bird GetInstance() {
         return instance;
     }
@@ -49,6 +40,9 @@ public class Bird : MonoBehaviour {
         Answers
     }
 
+    /**
+    * Method to construct the bird.
+    **/
     private void Awake() {
         instance = this;
         birdRigidbody2D = GetComponent<Rigidbody2D>();
@@ -56,6 +50,9 @@ public class Bird : MonoBehaviour {
         state = State.WaitingToStart;
     }
 
+    /**
+    * Method to update the bird.
+    **/
     private void Update() {
         switch (state) {
         default:
@@ -84,7 +81,6 @@ public class Bird : MonoBehaviour {
             if (waiting == false) {
                 state = State.Playing;
                 birdRigidbody2D.bodyType = RigidbodyType2D.Dynamic;
-                Jump();
                 questionWindow.Hide();
                 answersWindow.Hide();
                 waiting = true;
@@ -96,17 +92,24 @@ public class Bird : MonoBehaviour {
             if (waiting == false) {
                 state = State.Playing;
                 birdRigidbody2D.bodyType = RigidbodyType2D.Dynamic;
-                Jump();
                 feedbackWindow.Hide();
                 waiting = true;
-                if (OnStartedPlaying != null) OnStartedPlaying(this, EventArgs.Empty);
+                 wrongAnswer();
+                 if(wrongAnswer() == false){
+                     if (OnStartedPlaying != null) OnStartedPlaying(this, EventArgs.Empty);
+                 } if(wrongAnswer() == true){
+                    if (OnDied != null) OnDied(this, EventArgs.Empty);         
+                 }
+                
             }
             break;
         }
         aboveMap();
     }
 
-
+    /**
+    * Method to handle the click/keyEvent.
+    **/
     private bool TestInput() {
         return 
             Input.GetKeyDown(KeyCode.Space) || 
@@ -114,17 +117,26 @@ public class Bird : MonoBehaviour {
             Input.touchCount > 0;
     }
 
+    /**
+    * Method to let the bird jump.
+    **/
     private void Jump() {
         birdRigidbody2D.velocity = Vector2.up * JUMP_AMOUNT;
         SoundManager.PlaySound(SoundManager.Sound.BirdJump);
     }
 
+    /**
+    * Method to let the bird die when it collides.
+    **/
     private void OnTriggerEnter2D(Collider2D collider) {
         birdRigidbody2D.bodyType = RigidbodyType2D.Static;
         SoundManager.PlaySound(SoundManager.Sound.Lose);
         if (OnDied != null) OnDied(this, EventArgs.Empty);
     }
 
+    /**
+    * Method to let the bird die when it is above the map.
+    **/
     private void aboveMap(){
         if(birdRigidbody2D.position.y > 55) {
             birdRigidbody2D.bodyType = RigidbodyType2D.Static;
@@ -133,20 +145,46 @@ public class Bird : MonoBehaviour {
         }
     }
 
+    /**
+    * Method to let the bird die when the answer is wrong
+    **/
+    public bool wrongAnswer(){
+        if(Level.GetInstance().answer == "Fout"){
+            birdRigidbody2D.bodyType = RigidbodyType2D.Static;
+            SoundManager.PlaySound(SoundManager.Sound.Lose);
+            waiting = false;
+            return true;
+            // if (OnDied != null) OnDied(this, EventArgs.Empty);
+        } return false;
+    }
+
+    /**
+    * Getter for the birdRigidbody2D.position.y
+    **/
     public float GetYPosition(){
         return birdRigidbody2D.position.y;
     }
 
+    /**
+    * Method to stop the bird when question is visable.
+    **/
     public void stopQuestion(){
         birdRigidbody2D.bodyType = RigidbodyType2D.Static;
         state = State.Question;
     }
 
+    
+    /**
+    * Method to stop the bird when feedback is visable.
+    **/
     public void stopFeedback(){
         birdRigidbody2D.bodyType = RigidbodyType2D.Static;
         state = State.Feedback;
     }
 
+    /**
+    * Method to play the game.
+    **/
     public bool play() {
         waiting = false;
         return waiting;

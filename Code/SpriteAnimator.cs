@@ -16,6 +16,9 @@ public class SpriteAnimator : MonoBehaviour {
     private int currentFrame;
     private SpriteRenderer spriteRenderer;
     
+    /**
+    * Method to construct the spriteAnimator.
+    **/
     private void Awake() {
         timerMax = 1f/framesPerSecond;
         spriteRenderer = transform.GetComponent<SpriteRenderer>();
@@ -26,6 +29,9 @@ public class SpriteAnimator : MonoBehaviour {
         }
     }
 
+    /**
+    * Method to update the spriteAnimator.
+    **/
     private void Update() {
         if (!isActive) return;
         timer += useUnscaledDeltaTime ? Time.unscaledDeltaTime : Time.deltaTime;
@@ -51,6 +57,9 @@ public class SpriteAnimator : MonoBehaviour {
         }
     }
 
+    /**
+    * Method to setup the spriteAnimator.
+    **/
     public void Setup(Sprite[] frames, int framesPerSecond) {
         this.frames = frames;
         this.framesPerSecond = framesPerSecond;
@@ -60,10 +69,16 @@ public class SpriteAnimator : MonoBehaviour {
         PlayStart();
     }
 
+    /**
+    * Method to set the max for the timer.
+    **/
     public void SetTimerMax(float timerMax) {
         this.timerMax = timerMax;
     }
 
+    /**
+    * Method to start playing the spriteAnimator.
+    **/
     public void PlayStart() {
         timer = 0;
         currentFrame = 0;

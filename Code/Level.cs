@@ -1,15 +1,3 @@
-/* 
-    ------------------- Code Monkey -------------------
-
-    Thank you for downloading this package
-    I hope you find it useful in your projects
-    If you have any questions let me know
-    Cheers!
-
-               unitycodemonkey.com
-    --------------------------------------------------
- */
-
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -51,7 +39,7 @@ public class Level : MonoBehaviour {
     private bool isWaitingQuestion = false;
     private bool isWaitingFeedback = false;
     private bool isWaitingAnswer = false;
-    private string answer;
+    public string answer;
     private List<string> questions; 
     private List<string> feedback;
     private List<string> rightAnswers; 
@@ -74,13 +62,15 @@ public class Level : MonoBehaviour {
         Impossible,
     }
 
-    private enum State {
+    public enum State {
         WaitingToStart,
         Playing,
         BirdDead,
     }
 
-
+    /**
+    * Method to construct the level.
+    **/
     private void Awake() {
         instance = this;
         SpawnInitialGround();
@@ -98,20 +88,35 @@ public class Level : MonoBehaviour {
             wrongAnswers = new List<string>{"Ja", "Hackers", "Foto's", "Nee", "Een wachtwoord tekens", "Persoon negeren", "Nare reactie plaatsen", "Zelf gaan pesten", "Ja"};
      
     }
+
+    /**
+    * Method to start the level.
+    **/
     private void Start() {
         Bird.GetInstance().OnDied += Bird_OnDied;
         Bird.GetInstance().OnStartedPlaying += Bird_OnStartedPlaying;
     }
 
+    /**
+    * Method to set the state to Playing.
+    */
     private void Bird_OnStartedPlaying(object sender, System.EventArgs e) {
         state = State.Playing;
     }
 
-    private void Bird_OnDied(object sender, System.EventArgs e) {
+    
+    /**
+    * Method to set the state to BirdDead.
+    */
+    public void Bird_OnDied(object sender, System.EventArgs e) {
         //CMDebug.TextPopupMouse("Dead!");
         state = State.BirdDead;
     }
 
+    
+    /**
+    * Method to update the game.
+    */
     private void Update() {
         if (state == State.Playing) {
             HandlePipeMovement();
@@ -125,7 +130,6 @@ public class Level : MonoBehaviour {
                 getFeedback();
                 getRightAnswer();
                 getWrongAnswer();
-                // upperAnswer() = upperAnswer;
                 randomNumber = Random.Range(0,2);
                 upperAnswer();
                 Debug.Log(upperAnswerIsRight());
@@ -161,6 +165,10 @@ public class Level : MonoBehaviour {
         }
     }
 
+    
+    /**
+    * Method to spawn the clouds.
+    */
     private void SpawnInitialClouds() {
         cloudList = new List<Transform>();
         Transform cloudTransform;
@@ -168,6 +176,10 @@ public class Level : MonoBehaviour {
         cloudList.Add(cloudTransform);
     }
 
+    
+    /**
+    * Method to get the cloudprefabtransform.
+    */
     private Transform GetCloudPrefabTransform() {
         switch (Random.Range(0, 3)) {
         default:
@@ -177,6 +189,10 @@ public class Level : MonoBehaviour {
         }
     }
 
+    
+    /**
+    * Method to handle the clouds.
+    */
     private void HandleClouds() {
         // Handle Cloud Spawning
         cloudSpawnTimer -= Time.deltaTime;
@@ -203,6 +219,10 @@ public class Level : MonoBehaviour {
         }
     }
 
+    
+    /**
+    * Method to spawn the ground.
+    */
     private void SpawnInitialGround() {
         groundList = new List<Transform>();
         Transform groundTransform;
@@ -216,6 +236,10 @@ public class Level : MonoBehaviour {
         groundList.Add(groundTransform);
     }
 
+    
+    /**
+    * Method to handle the ground.
+    */
     private void HandleGround() {
         foreach (Transform groundTransform in groundList) {
             groundTransform.position += new Vector3(-1, 0, 0) * PIPE_MOVE_SPEED * Time.deltaTime;
@@ -237,6 +261,10 @@ public class Level : MonoBehaviour {
         }
     }
 
+    
+    /**
+    * Method to spawn the pipes.
+    */
     private void HandlePipeSpawning() {
         pipeSpawnTimer -= Time.deltaTime;
         if (pipeSpawnTimer < 0) {
@@ -260,6 +288,10 @@ public class Level : MonoBehaviour {
         }
     }
 
+    
+    /**
+    * Method to check if Bird is going to pass the middlepipe.
+    */
     private bool isMiddlePipe(){
         
         for (int i = 0; i < middlePipeList.Count; i++){
@@ -272,6 +304,10 @@ public class Level : MonoBehaviour {
             return false;
     }
 
+    
+    /**
+    * Method to draw the question.
+    */
     private void drawQuestion(){
         Bird bird = Bird.GetInstance();
         for (int i = 0; i < middlePipeList.Count; i++)
@@ -298,23 +334,38 @@ public class Level : MonoBehaviour {
 
     }
 
+    
+    /**
+    * Method to get a random index from the questions list.
+    */
     public void getRandomIndex(){
             randomIndex = Random.Range(0, questions.Count);
             isWaitingIndex = true;
     }
 
+    
+    /**
+    * Method to get a random question.
+    */
     public void getQuestion(){
         for (int i = 0; i < questions.Count; i++)
         {
             currentQuestion = questions[randomIndex];
         }
     }
-
+    
+    
+    /**
+    * Getter for the currentQuestion.
+    */
     public string GetQuestion() {
         return currentQuestion;
     }
 
     
+    /**
+    * Method to get the right feedback fitting to the question.
+    */
     public void getFeedback(){
         for (int i = 0; i < feedback.Count; i++)
         {
@@ -322,11 +373,18 @@ public class Level : MonoBehaviour {
         }
     }
 
+    
+    /**
+    * Getter for the currentFeedback.
+    */
     public string GetFeedback() {
         return currentFeedback;
     }
 
     
+    /**
+    * Method to get the right answer fitting to the question.
+    */
     public void getRightAnswer(){
         for (int i = 0; i < rightAnswers.Count; i++)
         {
@@ -334,10 +392,18 @@ public class Level : MonoBehaviour {
         }
     }
 
+    
+    /**
+    * Getter for the currentRightAnswer.
+    */
     public string GetRightAnswer() {
         return currentRightAnswer;
     }
     
+    
+    /**
+    * Method to get the wrong answer fitting to the question.
+    */
     public void getWrongAnswer(){
         for (int i = 0; i < wrongAnswers.Count; i++)
         {
@@ -345,10 +411,18 @@ public class Level : MonoBehaviour {
         }
     }
 
+    
+    /**
+    * Getter for the currentWrongAnswer.
+    */
     public string GetWrongAnswer() {
         return currentWrongAnswer;
     }
 
+    
+    /**
+    * Method to decise if the upper answer is the right one.
+    */
     public string upperAnswer(){
         
         if(randomNumber == 0){
@@ -359,6 +433,10 @@ public class Level : MonoBehaviour {
             
     }
 
+    
+    /**
+    * Method to decise if the lower answer is the right one.
+    */
     public string lowerAnswer(){
         if(randomNumber == 0){
             return currentWrongAnswer;
@@ -366,19 +444,27 @@ public class Level : MonoBehaviour {
             return currentRightAnswer;
     }
     
+    
+    /**
+    * Method to check if the upper answer is the right one.
+    */
     private bool upperAnswerIsRight(){
         if(randomNumber == 0){
             return true;
         } return false;
     }
 
-    private bool answerDraw() {
-        if (isUpperGap() == true) {
-            return false;
-        } 
-        return true;
-    }
 
+    // private bool answerDraw() {
+    //     if (isUpperGap() == true) {
+    //         return false;
+    //     } 
+    //     return true;
+    // }
+
+    /**
+    * Method to check if Bird is going to pass the upper gap.
+    **/
     private bool isUpperGap(){
         Bird bird = Bird.GetInstance();
         if(isMiddlePipe() == true){
@@ -389,10 +475,16 @@ public class Level : MonoBehaviour {
         return false;
     }
 
+    /**
+    * Getter for the answer.
+    **/
     public string GetAnswer() {
         return answer;
     }
 
+    /**
+    * Method to move the pipes.
+    **/
     private void HandlePipeMovement() {
         for (int i=0; i<pipeList.Count; i++) {
             Pipe pipe = pipeList[i];
@@ -428,6 +520,9 @@ public class Level : MonoBehaviour {
         }
     }
 
+    /** 
+    * Method to set the difficulty of the game.
+    **/
     private void SetDifficulty(Difficulty difficulty) {
         switch (difficulty) {
         case Difficulty.Easy:
@@ -449,6 +544,9 @@ public class Level : MonoBehaviour {
         }
     }
 
+    /**
+    * Method to get the difficulty of the game.
+    **/
     private Difficulty GetDifficulty() {
         if (pipesSpawned >= 24) return Difficulty.Impossible;
         if (pipesSpawned >= 12) return Difficulty.Hard;
@@ -456,6 +554,9 @@ public class Level : MonoBehaviour {
         return Difficulty.Easy;
     }
 
+    /**
+    * Method to create a gap between the pipes.
+    **/
     private void CreateGapPipes(float gapY, float gapSize, float xPosition) {
         CreatePipe(gapY - gapSize * .5f, xPosition, true);
         CreatePipe(CAMERA_ORTHO_SIZE * 2f - gapY - gapSize * .5f, xPosition, false);
@@ -463,6 +564,9 @@ public class Level : MonoBehaviour {
         SetDifficulty(GetDifficulty());
     }
 
+    /**
+    * Method to create a dubble pipe.
+    **/
     private void CreateDubblePipes(float gapY, float gapSize, float xPosition) {
         CreatePipe(100 * .15f, xPosition, true);
         CreateMiddlePipes(10f, xPosition);
@@ -471,6 +575,9 @@ public class Level : MonoBehaviour {
         SetDifficulty(GetDifficulty());
     }
 
+    /**
+    * Method to create a middle pipe.
+    **/
     private void CreateMiddlePipes(float height, float xPosition){
         // Set up Pipe Head
         Transform pipeHeadTop = Instantiate(GameAssets.GetInstance().pfPipeHead);
@@ -499,6 +606,9 @@ public class Level : MonoBehaviour {
         middlePipeList.Add(middlePipe);
     }
 
+    /**
+    * Method to create a pipe
+    **/
     private void CreatePipe(float height, float xPosition, bool createBottom) {
         // Set up Pipe Head
         Transform pipeHead = Instantiate(GameAssets.GetInstance().pfPipeHead);
@@ -532,10 +642,16 @@ public class Level : MonoBehaviour {
         pipeList.Add(pipe);
     }
 
+    /**
+    * Getter for the pipesSpawned.
+    **/
     public int GetPipesSpawned() {
         return pipesSpawned;
     }
 
+    /**
+    * Getter for the pipesPassedCount.
+    **/ 
     public int GetPipesPassedCount() {
         return pipesPassedCount;
     }
@@ -549,25 +665,40 @@ public class Level : MonoBehaviour {
         private Transform pipeBodyTransform;
         private bool isBottom;
 
+        /**
+        * Method to construct the pipe.
+        **/
         public Pipe(Transform pipeHeadTransform, Transform pipeBodyTransform, bool isBottom) {
             this.pipeHeadTransform = pipeHeadTransform;
             this.pipeBodyTransform = pipeBodyTransform;
             this.isBottom = isBottom;
         }
 
+        /**
+        * Method to move the pipe.
+        */
         public void Move() {
             pipeHeadTransform.position += new Vector3(-1, 0, 0) * PIPE_MOVE_SPEED * Time.deltaTime;
             pipeBodyTransform.position += new Vector3(-1, 0, 0) * PIPE_MOVE_SPEED * Time.deltaTime;
         }
 
+        /**
+        * Getter for the pipeHeadTransform.position.x
+        */
         public float GetXPosition() {
             return pipeHeadTransform.position.x;
         }
 
+        /**
+        * Method to check if the pipe is the one on the bottom.
+        **/
         public bool IsBottom() {
             return isBottom;
         }
 
+        /**
+        * Method to destroy the pipe.
+        **/
         public void DestroySelf() {
             Destroy(pipeHeadTransform.gameObject);
             Destroy(pipeBodyTransform.gameObject);
@@ -575,28 +706,46 @@ public class Level : MonoBehaviour {
 
     }
 
+    /**
+    * Represents a single middlepipe.
+    **/
     private class MiddlePipe{
         
         private Transform pipeHeadTopTransform;
         private Transform pipeHeadBottomTransform;
         private Transform pipeBodyTransform;
 
+        
+        /**
+        * Method to construct the middlepipe.
+        **/
         public MiddlePipe(Transform pipeHeadTopTransform, Transform pipeHeadBottomTransform, Transform pipeBodyTransform) {
             this.pipeHeadTopTransform = pipeHeadTopTransform;
             this.pipeHeadBottomTransform = pipeHeadBottomTransform;
             this.pipeBodyTransform = pipeBodyTransform;
         }
 
+        
+        /**
+        * Method to construct the middlepipe.
+        **/
         public void Move() {
             pipeHeadTopTransform.position += new Vector3(-1, 0, 0) * PIPE_MOVE_SPEED * Time.deltaTime;
             pipeHeadBottomTransform.position += new Vector3(-1, 0, 0) * PIPE_MOVE_SPEED * Time.deltaTime;
             pipeBodyTransform.position += new Vector3(-1, 0, 0) * PIPE_MOVE_SPEED * Time.deltaTime;
         }
 
+        
+        /**
+        * Getter for the pipeBodyTransform.position.x
+        **/
         public float GetXPosition(){
             return pipeBodyTransform.position.x;
         }
 
+        /**
+        * Method to destroy the middlepipe.
+        **/
         public void DestroySelf() {
             Destroy(pipeHeadTopTransform.gameObject);
             Destroy(pipeHeadBottomTransform.gameObject);

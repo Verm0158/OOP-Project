@@ -1,16 +1,4 @@
-﻿/* 
-    ------------------- Code Monkey -------------------
-
-    Thank you for downloading this package
-    I hope you find it useful in your projects
-    If you have any questions let me know
-    Cheers!
-
-               unitycodemonkey.com
-    --------------------------------------------------
- */
-
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -21,6 +9,9 @@ public class FeedbackWindow : MonoBehaviour {
     private Text feedbackText;
     private Text answer;
 
+    /**
+    * Method to construct the feedbackwindow.
+    **/
     private void Awake() {
         feedbackText = transform.Find("FeedbackText").GetComponent<Text>();
         answer = transform.Find("Answer").GetComponent<Text>();
@@ -31,12 +22,17 @@ public class FeedbackWindow : MonoBehaviour {
         transform.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
     }
 
-
+    /** Method to hide the feedbackwindow at the start of the game.
+    *
+    **/
     private void Start() {
         Bird.GetInstance().Feedback += Bird_Feedback;
         Hide();
     }
 
+    /**
+    * Method to show the feedbackwindow with the right text.
+    **/
     private void Bird_Feedback(object sender, System.EventArgs e) {
         feedbackText.text = Level.GetInstance().GetFeedback();
 
@@ -45,10 +41,16 @@ public class FeedbackWindow : MonoBehaviour {
         Show();
     }
 
+    /**
+    * Method to hide the feedbackwindow.
+    **/
     public void Hide() {
         gameObject.SetActive(false);
     }
 
+    /**
+    * Method to show the feedbackwindow.
+    **/
     private void Show() {
         gameObject.SetActive(true);
     }

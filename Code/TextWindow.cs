@@ -1,16 +1,4 @@
-﻿/* 
-    ------------------- Code Monkey -------------------
-
-    Thank you for downloading this package
-    I hope you find it useful in your projects
-    If you have any questions let me know
-    Cheers!
-
-               unitycodemonkey.com
-    --------------------------------------------------
- */
-
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -21,6 +9,9 @@ public class TextWindow : MonoBehaviour {
     private Text upperText;
     private Text lowerText;
 
+    /** 
+    * Method to construct the textwindow.
+    **/
     private void Awake() {
         upperText = transform.Find("UpperText").GetComponent<Text>();
         lowerText = transform.Find("LowerText").GetComponent<Text>();
@@ -28,12 +19,18 @@ public class TextWindow : MonoBehaviour {
         transform.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
     }
 
+    /**
+    * Method to hide the textwindow at the start of the game.
+    **/
     private void Start() {
         Bird.GetInstance().Answers += Bird_Answers;
 
         Hide();
     }
 
+    /**
+    * Method to show the textwindow with the right text.
+    **/
     private void Bird_Answers(object sender, System.EventArgs e) {
         upperText.text = Level.GetInstance().upperAnswer();
   
@@ -42,10 +39,16 @@ public class TextWindow : MonoBehaviour {
         Show();
     }
 
+    /**
+    * Method to hide the textwindow.
+    **/
     public void Hide() {
         gameObject.SetActive(false);
     }
 
+    /**
+    * Method to show the textwindow.
+    **/
     private void Show() {
         gameObject.SetActive(true);
     }
